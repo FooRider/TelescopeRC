@@ -4,16 +4,18 @@
              x:Class="FooRider.TelescopeRC.App.Views.ConnectionPage"
              xmlns:vm="clr-namespace:FooRider.TelescopeRC.App.ViewModels"
              BindingContext="{StaticResource MainViewModel}"
+             Title="Connection"
+             BackgroundColor="Black"
              >
   <ContentPage.Content>
-    <StackLayout BindingContext="{Binding ConnectionViewModel}">
+    <StackLayout BindingContext="{Binding ConnectionViewModel}" Padding="5">
       <Button Text="List devices" Command="{Binding ListDevicesCmd}" />
       <Button Text="Test send" Command="{Binding TestSendCmd}" />
 
       <CollectionView ItemsSource="{Binding BtDevices}">
         <CollectionView.ItemTemplate>
           <DataTemplate>
-            <Grid>
+            <Grid Padding="5">
               <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="0" />
               <Label Text="{Binding Address}" Grid.Row="1" Grid.Column="0" />
 
