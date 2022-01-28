@@ -1,7 +1,9 @@
-﻿using FooRider.TelescopeRC.App.Models;
+﻿using Android.Bluetooth;
+using FooRider.TelescopeRC.App.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -10,47 +12,59 @@ namespace FooRider.TelescopeRC.App.Services
 {
   internal class BluetoothCommunicator : IBluetoothCommunicator, IDisposable
   {
-    private readonly IBluetoothAdapter bluetoothAdapter;
+    private readonly BluetoothManager manager;
+    private readonly BluetoothAdapter adapter;
 
-    private BluetoothDeviceModel bluetoothDevice;
-    //private IBluetoothManagedConnection connection;
-    private IBluetoothConnection basicConnection;
+    private BluetoothDeviceModel deviceModel;
+
+    private BluetoothDevice device;
+    private BluetoothSocket socket;
 
     public BluetoothCommunicator()
     {
-      bluetoothAdapter = DependencyService.Resolve<IBluetoothAdapter>();
-      if (!bluetoothAdapter.Enabled)
-        bluetoothAdapter.Enable();
+      manager = (BluetoothManager)Android.App.Application.Context.GetSystemService("bluetooth");
+      adapter = manager.Adapter;
     }
 
     public Task<IEnumerable<BluetoothDeviceModel>> ListDevices()
     {
-      return Task.FromResult(bluetoothAdapter.BondedDevices);
+      var result = adapter.BondedDevices.Select(d => new BluetoothDeviceModel(d.Address, d.Name)).ToList();
+      return Task.FromResult(result.AsEnumerable());
     }
 
-    public async Task SetBluetoothDevice(BluetoothDeviceModel bluetoothDevice)
+    public async Task SetBluetoothDevice(BluetoothDeviceModel deviceModel)
     {
       try
       {
-        this.bluetoothDevice = bluetoothDevice;
+        this.deviceModel = deviceModel;
 
         CloseConnection();
 
-        //connection = bluetoothAdapter.CreateManagedConnection(bluetoothDevice);
-        //connection.OnTransmitted += Connection_OnTransmitted;
-        //connection.OnStateChanged += Connection_OnStateChanged;
-        //connection.OnRecived += Connection_OnRecived;
-        //connection.OnError += Connection_OnError;
-        //connection.Connect();
-
-        basicConnection = bluetoothAdapter.CreateConnection(bluetoothDevice);
-        await basicConnection.ConnectAsync();
+        device = adapter.GetRemoteDevice(deviceModel.Address);
+        socket = await CreateSocket(device);
+        await socket.ConnectAsync();
       }
       catch (Exception ex)
       {
         Debug.WriteLine("SendTxt(): Exception caught: " + ex.Message);
         Debug.WriteLine(ex.StackTrace);
+
+        CloseConnection();
       }
+    }
+
+    private async Task<BluetoothSocket> CreateSocket(BluetoothDevice bluetoothDevice)
+    {
+      var bdclass = Java.Lang.Class.FromType(typeof(BluetoothDevice));
+
+      var methods = bdclass.GetMethods().Where(m => m.Name == "createInsecureRfcommSocket").ToArray();
+      var method = methods.First();
+
+      var res = method.Invoke(bluetoothDevice, 1);
+
+      var sock = res as BluetoothSocket;
+
+      return sock;
     }
 
     public async Task SendTxt(string text)
@@ -59,15 +73,7 @@ namespace FooRider.TelescopeRC.App.Services
       {
         var data = Encoding.UTF8.GetBytes(text);
 
-        //if (connection != null)
-        //{
-        //  connection.Transmit(data, 0, data.Length);
-        //}
-
-        if (basicConnection != null)
-        {
-          await basicConnection.TransmitAsync(data, 0, data.Length);
-        }
+        await socket?.OutputStream.WriteAsync(data, 0, data.Length);
       }
       catch (Exception ex)
       {
@@ -76,46 +82,15 @@ namespace FooRider.TelescopeRC.App.Services
       }
     }
 
-    //private void Connection_OnError(object sender, System.Threading.ThreadExceptionEventArgs threadExceptionEventArgs)
-    //{
-    //  Debug.WriteLine("Connection_OnError(): " + threadExceptionEventArgs?.Exception?.Message);
-    //  Debug.WriteLine(threadExceptionEventArgs?.Exception?.StackTrace);
-    //}
-
-    //private void Connection_OnRecived(object sender, RecivedEventArgs recivedEventArgs)
-    //{
-    //  Debug.WriteLine($"Connection_OnReceived(): ...");
-    //}
-
-    //private void Connection_OnStateChanged(object sender, StateChangedEventArgs stateChangedEventArgs)
-    //{
-    //  Debug.WriteLine($"Connection_OnStateChanged(): {stateChangedEventArgs.ConnectionState}");
-    //}
-
-    //private void Connection_OnTransmitted(object sender, TransmittedEventArgs transmittedEventArgs)
-    //{
-    //  Debug.WriteLine($"Connection_OnTransmitted(): ...");
-    //}
-
     private void CloseConnection()
     {
-      //if (connection != null)
-      //{
-      //  using (connection)
-      //  {
-      //    connection.OnTransmitted -= Connection_OnTransmitted;
-      //    connection.OnStateChanged -= Connection_OnStateChanged;
-      //    connection.OnRecived -= Connection_OnRecived;
-      //    connection.OnError -= Connection_OnError;
-      //    connection = null;
-      //  }
-      //}
+      using (socket?.InputStream) { }
+      using (socket?.OutputStream) { }
+      using (socket) { }
+      using (device) { }
 
-      if (basicConnection != null)
-      {
-        using (basicConnection) { }
-        basicConnection = null;
-      }
+      socket = null;
+      device = null;
     }
 
     public void Dispose()
