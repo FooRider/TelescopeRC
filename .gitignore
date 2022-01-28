@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/TelescopeRCApp/FooRider.TelescopeRC.App/FooRider.TelescopeRC.App/obj
+/TelescopeRCApp/FooRider.TelescopeRC.App/FooRider.TelescopeRC.App/bin
+/TelescopeRCApp/FooRider.TelescopeRC.App/FooRider.TelescopeRC.App.Android/obj
+/TelescopeRCApp/FooRider.TelescopeRC.App/FooRider.TelescopeRC.App.Android/bin
+/TelescopeRCApp/.vs/FooRider.TelescopeRC.App
