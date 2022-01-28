@@ -3,18 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FooRider.TelescopeRC.App.Views.ConnectionPage"
              xmlns:vm="clr-namespace:FooRider.TelescopeRC.App.ViewModels"
-             Title="{Binding Title}">
-  <ContentPage.BindingContext>
-    <vm:ConnectionViewModel />
-  </ContentPage.BindingContext>
-
+             BindingContext="{StaticResource MainViewModel}"
+             >
   <ContentPage.Content>
-    <StackLayout>
-      <!--<Label Text="Welcome to Xamarin.Forms!"
-              VerticalOptions="CenterAndExpand" 
-              HorizontalOptions="CenterAndExpand" />-->
-      <Label Text="{Binding Test1}" />
-      <Button Text="Test" Command="{Binding TestCmd}" />
+    <StackLayout BindingContext="{Binding ConnectionViewModel}">
+      <Button Text="Test" Command="{Binding ListDevicesCmd}" />
+      
+      <CollectionView ItemsSource="{Binding BtDevices}">
+        <CollectionView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="0" />
+              <Label Text="{Binding Address}" Grid.Row="1" Grid.Column="0" />
+
+              <Button Text="Connect" 
+                      Command="{Binding BindingContext.ConnectDeviceCmd, Source={RelativeSource AncestorType={Type CollectionView}}}" 
+                      CommandParameter="{Binding}" 
+                      Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" />
+
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+              </Grid.RowDefinitions>
+            </Grid>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+      </CollectionView>
     </StackLayout>
   </ContentPage.Content>
 </ContentPage>

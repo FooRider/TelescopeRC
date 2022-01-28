@@ -32,7 +32,7 @@ namespace FooRider.TelescopeRC.App.Droid
 
     private void RegisterServices()
     {
-      DependencyService.RegisterSingleton<IBluetoothCom>(new BluetoothCom(this.ApplicationContext));
+      //DependencyService.RegisterSingleton<IBluetoothCom>(new BluetoothCom(this.ApplicationContext));
     }
   }
 }

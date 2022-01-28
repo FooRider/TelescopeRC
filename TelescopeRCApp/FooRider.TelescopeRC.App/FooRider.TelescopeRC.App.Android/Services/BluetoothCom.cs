@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using FooRider.TelescopeRC.App.Services;
+using Java.Lang;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,9 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 
 
-//[assembly: Dependency(typeof(FooRider.TelescopeRC.App.Droid.Services.BluetoothCom))]
 namespace FooRider.TelescopeRC.App.Droid.Services
 { 
+  [Deprecated]
   class BluetoothCom : IBluetoothCom
   {
     private readonly BluetoothManager manager;
@@ -37,7 +38,24 @@ namespace FooRider.TelescopeRC.App.Droid.Services
       if (manager.Adapter == null)
         return "NULL ADAPTER";
 
-      return manager.Adapter.State.ToString();
+      //return manager.Adapter.State.ToString();
+
+      
+
+      var adapter = manager.Adapter;
+
+      var sb = new System.Text.StringBuilder();
+
+      if (!adapter.StartDiscovery())
+        return "Could not start discovery";
+
+      await Task.Delay(3000);
+
+      if (adapter.BondedDevices != null)
+        foreach (var bd in adapter.BondedDevices)
+          sb.Append($"{bd.Name}; ");
+
+      return sb.ToString();
 
       return "OK";
     }

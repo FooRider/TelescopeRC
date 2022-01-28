@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <SelectedDevice>Samsung SM-A715F</SelectedDevice>
-    <ActiveDebugProfile>Samsung SM-A715F</ActiveDebugProfile>
+    <SelectedDevice>Samsung SM-A715F %28192.168.0.196:33089%29</SelectedDevice>
+    <ActiveDebugProfile>Samsung SM-A715F %28192.168.0.196:33089%29</ActiveDebugProfile>
     <DefaultDevice>pixel_5_-_api_30</DefaultDevice>
     <AndroidDesignerPreferredTheme>MainTheme</AndroidDesignerPreferredTheme>
+    <SelectedPlatformGroup>PhysicalDevice</SelectedPlatformGroup>
   </PropertyGroup>
 </Project>
