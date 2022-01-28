@@ -7,8 +7,9 @@
              >
   <ContentPage.Content>
     <StackLayout BindingContext="{Binding ConnectionViewModel}">
-      <Button Text="Test" Command="{Binding ListDevicesCmd}" />
-      
+      <Button Text="List devices" Command="{Binding ListDevicesCmd}" />
+      <Button Text="Test send" Command="{Binding TestSendCmd}" />
+
       <CollectionView ItemsSource="{Binding BtDevices}">
         <CollectionView.ItemTemplate>
           <DataTemplate>

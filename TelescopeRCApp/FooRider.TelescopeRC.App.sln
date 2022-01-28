@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FooRider.TelescopeRC.App.Android", "FooRider.TelescopeRC.App\FooRider.TelescopeRC.App.Android\FooRider.TelescopeRC.App.Android.csproj", "{250F5850-5074-4FC5-B7D0-BFEF4823515E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FooRider.TelescopeRC.App", "FooRider.TelescopeRC.App\FooRider.TelescopeRC.App\FooRider.TelescopeRC.App.csproj", "{64DBC3FF-A48B-4923-9120-17D543E77DFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FooRider.TelescopeRC.App", "FooRider.TelescopeRC.App\FooRider.TelescopeRC.App\FooRider.TelescopeRC.App.csproj", "{64DBC3FF-A48B-4923-9120-17D543E77DFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

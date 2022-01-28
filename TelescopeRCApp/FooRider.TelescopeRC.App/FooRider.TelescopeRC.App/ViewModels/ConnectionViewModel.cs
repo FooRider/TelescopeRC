@@ -1,5 +1,4 @@
 ﻿using FooRider.TelescopeRC.App.Services;
-using Plugin.BluetoothClassic.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +11,8 @@ namespace FooRider.TelescopeRC.App.ViewModels
 {
   public class ConnectionViewModel : BaseViewModel
   {
+    private readonly IBluetoothCommunicator bluetoothCommunicator;
+
     private MainViewModel mainViewModel;
     public MainViewModel MainViewModel
     {
@@ -34,76 +35,40 @@ namespace FooRider.TelescopeRC.App.ViewModels
     private ICommand connectDeviceCmd;
     public ICommand ConnectDeviceCmd => connectDeviceCmd ?? (connectDeviceCmd = new Command<BluetoothDeviceViewModel>(async (vm) => await ConnectDevice(vm)));
 
+    private ICommand testSendCmd;
+    public ICommand TestSendCmd => testSendCmd ?? (testSendCmd = new Command(async () => await TestSend()));
+
+    public ConnectionViewModel()
+    {
+      bluetoothCommunicator = DependencyService.Resolve<IBluetoothCommunicator>();
+    }
+
     private async Task ConnectDevice(BluetoothDeviceViewModel btvm)
     {
-
+      await bluetoothCommunicator.SetBluetoothDevice(btvm.BluetoothDevice);
     }
 
     private async Task ListDevices()
     {
-      var ba = DependencyService.Resolve<IBluetoothAdapter>();
-
-      if (!ba.Enabled)
-        ba.Enable();
-
       btDevices.Clear();
 
-      foreach (var bd in ba.BondedDevices)
+      var devices = await bluetoothCommunicator.ListDevices();
+
+      foreach (var bd in devices)
       {
         var vm = new BluetoothDeviceViewModel()
         {
           Address = bd.Address,
           Name = bd.Name,
+          BluetoothDevice = bd
         };
         btDevices.Add(vm);
       }
     }
 
-    //private string test1 = "a";
-    //public string Test1
-    //{
-    //  get => test1;
-    //  set
-    //  {
-    //    if (test1 != value)
-    //    {
-    //      test1 = value;
-    //      OnPropertyChanged();
-    //    }
-    //  }
-    //}
-
-    //private ICommand testCmd;
-    //public ICommand TestCmd => testCmd ?? (testCmd = new Command(async () => await TestList()));
-
-    //private async Task Test()
-    //{
-    //  var bc = DependencyService.Resolve<IBluetoothCom>();
-
-    //  Test1 = await bc.DoSomething("ahoj");
-
-    //  //Test1 = DateTime.Now.ToString();
-    //  //await Task.Delay(1000);
-    //  //Test1 = DateTime.Now.ToString();
-    //  //await Task.Delay(1000);
-    //  //Test1 = DateTime.Now.ToString();
-    //}
-
-    //private async Task TestList()
-    //{
-    //  var sb = new StringBuilder();
-
-
-    //  var bluetoothAdapter = DependencyService.Resolve<IBluetoothAdapter>();
-
-    //  if (!bluetoothAdapter.Enabled)
-    //    bluetoothAdapter.Enable();
-
-    //  var deviceVMs = bluetoothAdapter.BondedDevices;
-    //  foreach (var d in deviceVMs)
-    //    sb.Append($"{d.Address} {d.Name}; " + Environment.NewLine);
-
-    //  Test1 = sb.ToString();
-    //}
+    private async Task TestSend()
+    {
+      await bluetoothCommunicator.SendTxt("Hello world!");
+    }
   }
 }

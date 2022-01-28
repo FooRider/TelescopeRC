@@ -12,8 +12,7 @@ namespace FooRider.TelescopeRC.App
     public App()
     {
       InitializeComponent();
-
-      DependencyService.Register<MockDataStore>();
+      
       MainPage = new AppShell();
     }
 

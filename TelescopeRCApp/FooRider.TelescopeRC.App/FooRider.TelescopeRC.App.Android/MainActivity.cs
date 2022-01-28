@@ -6,7 +6,6 @@ using Android.Runtime;
 using Android.OS;
 using Xamarin.Forms;
 using FooRider.TelescopeRC.App.Services;
-using FooRider.TelescopeRC.App.Droid.Services;
 
 namespace FooRider.TelescopeRC.App.Droid
 {
@@ -32,6 +31,7 @@ namespace FooRider.TelescopeRC.App.Droid
 
     private void RegisterServices()
     {
+      DependencyService.RegisterSingleton<IBluetoothCommunicator>(new BluetoothCommunicator());
       //DependencyService.RegisterSingleton<IBluetoothCom>(new BluetoothCom(this.ApplicationContext));
     }
   }

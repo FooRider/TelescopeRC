@@ -62,7 +62,13 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BluetoothCom.cs" />
+    <Compile Include="Services\BluetoothAdapter.cs" />
+    <Compile Include="Services\BluetoothCommunicator.cs" />
+    <Compile Include="Services\BluetoothConnection.cs" />
+    <Compile Include="Services\BluetoothConnectionException.cs" />
+    <Compile Include="Services\BluetoothDataTransferUnitException.cs" />
+    <Compile Include="Services\BluetoothReceiveException.cs" />
+    <Compile Include="Services\BluetoothTransmitException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
