@@ -2,6 +2,8 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:FooRider.TelescopeRC.App.ViewModels"
+             xmlns:v="clr-namespace:FooRider.TelescopeRC.App.Views"
+             xmlns:local="clr-namespace:FooRider.TelescopeRC.App"
              x:Class="FooRider.TelescopeRC.App.App">
   <!--
       Define global resources and styles here, that apply to all pages in your app.
@@ -33,9 +35,16 @@
         <Setter Property="BorderWidth" Value="2"/>
         <Setter Property="Padding" Value="5" />
       </Style>
-      <Style TargetType="ContentPage">
+      <Style TargetType="Label">
+        <Setter Property="TextColor" Value="White" />
+      </Style>
+      <Style x:Key="PageStyle" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="Black" />
       </Style>
+      <Style TargetType="{x:Type v:ConnectionPage}" BasedOn="{StaticResource PageStyle}" />
+      <Style TargetType="{x:Type v:CapturingPage}" BasedOn="{StaticResource PageStyle}" />
+      <Style TargetType="{x:Type v:FocusingPage}" BasedOn="{StaticResource PageStyle}" />
+      <Style TargetType="{x:Type v:AboutPage}" BasedOn="{StaticResource PageStyle}" />
     </ResourceDictionary>        
   </Application.Resources>
 </Application>

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FooRider.TelescopeRC.App.Views.AboutPage"
              xmlns:vm="clr-namespace:FooRider.TelescopeRC.App.ViewModels"
-             Title="{Binding Title}">
+             BindingContext="{StaticResource MainVM}">
     
     <ContentPage.BindingContext>
         <vm:AboutVM />
