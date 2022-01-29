@@ -16,5 +16,15 @@ namespace FooRider.TelescopeRC.App.Views
     {
       InitializeComponent();
     }
+
+    private void Button_Pressed(object sender, EventArgs e)
+    {
+
+    }
+
+    private void Button_Released(object sender, EventArgs e)
+    {
+
+    }
   }
 }

@@ -12,6 +12,8 @@ namespace FooRider.TelescopeRC.App.Services
 {
   internal class BluetoothCommunicator : IBluetoothCommunicator, IDisposable
   {
+    private readonly Java.Util.UUID sppRecordUuid = Java.Util.UUID.FromString(BluetoothConstants.SppRecordUUID);
+
     private readonly BluetoothManager manager;
     private readonly BluetoothAdapter adapter;
 
@@ -26,13 +28,22 @@ namespace FooRider.TelescopeRC.App.Services
       adapter = manager.Adapter;
     }
 
-    public Task<IEnumerable<BluetoothDeviceModel>> ListDevices()
+    public Task<IEnumerable<BluetoothDeviceModel>> ListDevicesAsync()
     {
-      var result = adapter.BondedDevices.Select(d => new BluetoothDeviceModel(d.Address, d.Name)).ToList();
+      var result = new List<BluetoothDeviceModel>();
+      foreach (var bd in adapter.BondedDevices)
+      {
+        if (!bd.GetUuids().Any(pu => pu.Uuid.CompareTo(sppRecordUuid) == 0))
+          continue;
+
+        var vm = new BluetoothDeviceModel(bd.Address, bd.Name);
+        result.Add(vm);
+      }
+
       return Task.FromResult(result.AsEnumerable());
     }
 
-    public async Task SetBluetoothDevice(BluetoothDeviceModel deviceModel)
+    public async Task SetBluetoothDeviceAsync(BluetoothDeviceModel deviceModel)
     {
       try
       {
@@ -41,7 +52,7 @@ namespace FooRider.TelescopeRC.App.Services
         CloseConnection();
 
         device = adapter.GetRemoteDevice(deviceModel.Address);
-        socket = await CreateSocket(device);
+        socket = await CreateSocketAsync(device);
         await socket.ConnectAsync();
       }
       catch (Exception ex)
@@ -53,7 +64,7 @@ namespace FooRider.TelescopeRC.App.Services
       }
     }
 
-    private async Task<BluetoothSocket> CreateSocket(BluetoothDevice bluetoothDevice)
+    private async Task<BluetoothSocket> CreateSocketAsync(BluetoothDevice bluetoothDevice)
     {
       var bdclass = Java.Lang.Class.FromType(typeof(BluetoothDevice));
 
@@ -67,19 +78,25 @@ namespace FooRider.TelescopeRC.App.Services
       return sock;
     }
 
-    public async Task SendTxt(string text)
+    public async Task SendCommandAsync(string command)
     {
       try
       {
-        var data = Encoding.UTF8.GetBytes(text);
+        var data = Encoding.UTF8.GetBytes(command);
 
-        await socket?.OutputStream.WriteAsync(data, 0, data.Length);
+        if (socket != null)
+          await socket.OutputStream.WriteAsync(data, 0, data.Length);
       }
       catch (Exception ex)
       {
         Debug.WriteLine("SendTxt(): Exception caught: " + ex.Message);
         Debug.WriteLine(ex.StackTrace);
       }
+    }
+
+    public async Task<bool> GetIsConnectedAsync()
+    {
+      return socket?.IsConnected ?? false;
     }
 
     private void CloseConnection()

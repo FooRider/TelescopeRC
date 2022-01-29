@@ -9,19 +9,17 @@ using Xamarin.Forms;
 
 namespace FooRider.TelescopeRC.App.ViewModels
 {
-  public class ConnectionViewModel : BaseViewModel
+  public class ConnectionVM : BaseViewModel
   {
-    private readonly IBluetoothCommunicator bluetoothCommunicator;
-
-    private MainViewModel mainViewModel;
-    public MainViewModel MainViewModel
+    private MainVM mainViewModel;
+    public MainVM MainViewModel
     {
       get => mainViewModel;
       set => SetProperty(ref mainViewModel, value);
     }
 
-    private ObservableCollection<BluetoothDeviceViewModel> btDevices = new ObservableCollection<BluetoothDeviceViewModel>();
-    public ObservableCollection<BluetoothDeviceViewModel> BtDevices
+    private ObservableCollection<BluetoothDeviceVM> btDevices = new ObservableCollection<BluetoothDeviceVM>();
+    public ObservableCollection<BluetoothDeviceVM> BtDevices
     {
       get => btDevices;
       set => SetProperty(ref btDevices, value);
@@ -33,30 +31,25 @@ namespace FooRider.TelescopeRC.App.ViewModels
 
 
     private ICommand connectDeviceCmd;
-    public ICommand ConnectDeviceCmd => connectDeviceCmd ?? (connectDeviceCmd = new Command<BluetoothDeviceViewModel>(async (vm) => await ConnectDevice(vm)));
+    public ICommand ConnectDeviceCmd => connectDeviceCmd ?? (connectDeviceCmd = new Command<BluetoothDeviceVM>(async (vm) => await ConnectDevice(vm)));
 
     private ICommand testSendCmd;
     public ICommand TestSendCmd => testSendCmd ?? (testSendCmd = new Command(async () => await TestSend()));
 
-    public ConnectionViewModel()
+    private async Task ConnectDevice(BluetoothDeviceVM btvm)
     {
-      bluetoothCommunicator = DependencyService.Resolve<IBluetoothCommunicator>();
-    }
-
-    private async Task ConnectDevice(BluetoothDeviceViewModel btvm)
-    {
-      await bluetoothCommunicator.SetBluetoothDevice(btvm.BluetoothDevice);
+      await MainViewModel.BluetoothCommunicator.SetBluetoothDeviceAsync(btvm.BluetoothDevice);
     }
 
     private async Task ListDevices()
     {
       btDevices.Clear();
 
-      var devices = await bluetoothCommunicator.ListDevices();
+      var devices = await MainViewModel.BluetoothCommunicator.ListDevicesAsync();
 
       foreach (var bd in devices)
       {
-        var vm = new BluetoothDeviceViewModel()
+        var vm = new BluetoothDeviceVM()
         {
           Address = bd.Address,
           Name = bd.Name,
@@ -68,7 +61,7 @@ namespace FooRider.TelescopeRC.App.ViewModels
 
     private async Task TestSend()
     {
-      await bluetoothCommunicator.SendTxt("Hello world!");
+      await MainViewModel.BluetoothCommunicator.SendCommandAsync("Hello world!");
     }
   }
 }

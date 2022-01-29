@@ -5,9 +5,9 @@ using Xamarin.Forms;
 
 namespace FooRider.TelescopeRC.App.ViewModels
 {
-  public class AboutViewModel : BaseViewModel
+  public class AboutVM : BaseViewModel
   {
-    public AboutViewModel()
+    public AboutVM()
     {
       OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
     }

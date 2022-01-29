@@ -8,8 +8,10 @@ namespace FooRider.TelescopeRC.App.Services
 {
   public interface IBluetoothCommunicator
   {
-    Task SetBluetoothDevice(BluetoothDeviceModel bluetoothDevice);
-    Task SendTxt(string text);
-    Task<IEnumerable<BluetoothDeviceModel>> ListDevices();
+    Task SetBluetoothDeviceAsync(BluetoothDeviceModel bluetoothDevice);
+    Task SendCommandAsync(string command);
+    Task<IEnumerable<BluetoothDeviceModel>> ListDevicesAsync();
+
+    Task<bool> GetIsConnectedAsync();
   }
 }

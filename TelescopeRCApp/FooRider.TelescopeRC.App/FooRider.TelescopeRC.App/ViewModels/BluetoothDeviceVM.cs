@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FooRider.TelescopeRC.App.ViewModels
 {
-  public class BluetoothDeviceViewModel : BaseViewModel
+  public class BluetoothDeviceVM : BaseViewModel
   {
     private BluetoothDeviceModel bluetoothDevice;
     public BluetoothDeviceModel BluetoothDevice

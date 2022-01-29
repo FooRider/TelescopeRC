@@ -7,7 +7,7 @@
       Define global resources and styles here, that apply to all pages in your app.
   -->
   <Application.Resources>
-    <vm:MainViewModel x:Key="MainViewModel" />
+    <vm:MainVM x:Key="MainVM" />
 
     <ResourceDictionary>
       <Color x:Key="Primary">#020202</Color>

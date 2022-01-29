@@ -4,10 +4,10 @@ using System.Text;
 
 namespace FooRider.TelescopeRC.App.ViewModels
 {
-  public class FocusingViewModel : BaseViewModel
+  public class CapturingVM : BaseViewModel
   {
-    private MainViewModel mainViewModel;
-    public MainViewModel MainViewModel
+    private MainVM mainViewModel;
+    public MainVM MainViewModel
     {
       get => mainViewModel;
       set
