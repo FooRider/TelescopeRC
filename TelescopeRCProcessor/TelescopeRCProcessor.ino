@@ -19,7 +19,12 @@ void setup() {
   pinMode(MOTOR_STBY, OUTPUT);
   pinMode(MOTOR_AIN1, OUTPUT);
   pinMode(MOTOR_AIN2, OUTPUT);
-  pinMode(MOTOR_APRM, OUTPUT);
+  pinMode(MOTOR_APWM, OUTPUT);
+
+  analogWrite(MOTOR_APWM, 0);
+  digitalWrite(MOTOR_AIN1, LOW);
+  digitalWrite(MOTOR_AIN2, HIGH);
+  digitalWrite(MOTOR_STBY, LOW);
 }
 
 void loop() {
@@ -38,7 +43,19 @@ void loop() {
 
 void setFocusingMotorSpeed(byte speed)
 {
-
+  if (speed < 0) {
+    digitalWrite(MOTOR_AIN1, LOW);
+    digitalWrite(MOTOR_AIN2, HIGH);
+    analogWrite(MOTOR_APWM, -speed);
+  } else if (speed == 0) {
+    digitalWrite(MOTOR_AIN1, LOW);
+    digitalWrite(MOTOR_AIN2, LOW);
+    analogWrite(MOTOR_APWM, speed);
+  } else {
+    digitalWrite(MOTOR_AIN2, LOW);
+    digitalWrite(MOTOR_AIN1, HIGH);
+    analogWrite(MOTOR_APWM, speed);
+  }
 }
 
 void onFocusingCommand(int speed, int duration)
